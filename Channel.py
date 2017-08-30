@@ -3,6 +3,7 @@ MAXIMUM_PORT = 64000
 
 import Reciever
 import Sender
+import socket
 def main():
     #c_sin,c_sout,c_rin,c_rout = input("Enter the Four Port Numbers for Channel: ").split()
     i = 0
@@ -24,6 +25,8 @@ def main():
     loss = float(input("Please enter packet loss rate between 0 and 1: "))
     if(loss > 0 or loss < 1):
         loss = float(input("Please enter packet loss between 0 and 1: "))
+    connect(c_sin,c_sout,c_rin,c_rout)
+    
     
 def connect(c_sin,c_sout,c_rin,c_rout):
     sender = Sender(c_out,c_sin)

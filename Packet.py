@@ -15,7 +15,7 @@ class Packet:
         if self.magicno != MAGIC_NUMBER:
             raise ValueError("Magic Number mismatch")
         if self.packet_type == 0: #DATA
-            if self.dataLen > 512 or self.dataLen < 0:
+            if self.dataLen > 513 or self.dataLen < 0:
                 raise ValueError("Packet value must be between 0 and 512")
             if self.dataLen == 0:
                 print("End of File")
@@ -31,7 +31,7 @@ def main():
     seqno = 2
     dataLen = 1
     data = [0] * dataLen 
-    x = Packet(magic,packet_type,seqno,dataLen,data)
+    x = Packet(magic,packet_type,seqno,dataLen,"asdasd")
     x.constraints()
     
     
