@@ -13,7 +13,6 @@ def sender(port_sin,port_sout,c_sin,file):
     port_in = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     '''Binding sockets to Addresses'''
     port_in.bind((IP,port_sin))
-    port_out.bind((IP,port_sout))
     
     packet_buffer = [] # All Packets to be transmitted
     
@@ -22,10 +21,10 @@ def sender(port_sin,port_sout,c_sin,file):
     port_out.listen(1)
     
     
-    #new comment just a tst.
     
     # connect() sout
-    #port_out.connect((IP, c_sin))  # set to default receiver to port_num of Csin
+    server_address = (IP,port_sout)
+    port_out.connect(server_address)  # set to default receiver to port_num of Csin
     
     
     
