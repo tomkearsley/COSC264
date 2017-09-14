@@ -29,8 +29,3 @@ class Packet:
                                                                                            self.seqNo,
                                                                                            self.dataLen,
                                                                                            self.data)
-def main():
-    p = Packet(0x497E,0,1,510,"text")
-    print(p)
-    
-main()

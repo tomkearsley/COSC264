@@ -14,6 +14,7 @@ IP = '127.0.0.1'
 
 
 def sender(port_sin,port_sout,c_sin,raw_file):
+
     '''CHECK PORTS FOR IN RIGHT VALUES:'''
     minPort = 1024
     maxPort = 64000
@@ -111,9 +112,6 @@ def displayPacketData(packet_buffer):
 
 
 
-def main():
-    file = 'test.txt'
-    s = sender(9999,1999,29393,file) 
 
         
     
@@ -122,5 +120,5 @@ def main():
 
 
 
-main()
+sender()
         
