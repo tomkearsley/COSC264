@@ -2,7 +2,7 @@
 a certain size and sending these through the channel'''
 import socket
 import sys
-from packet import *
+import Packet
 import select
 import random
 
@@ -49,6 +49,10 @@ def get_options():
         sys.exit(1)
     return c_sin, c_sout, c_rin, c_rout, s_in, r_in, loss
 
+def non_terminal(c_sin, c_sout, c_rin, c_rout, s_in, r_in, loss):
+    return c_sin, c_sout, c_rin, c_rout, s_in, r_in, loss
+
+#c_sin, c_sout, c_rin, c_rout, s_in, r_in, loss = nonterminal()
 c_sin, c_sout, c_rin, c_rout, s_in, r_in, loss = get_options()
 
 #next step, we need to create a socket
@@ -171,3 +175,6 @@ Csin.close()
 Csout.close()
 Crin.close()
 Crout.close()
+
+
+

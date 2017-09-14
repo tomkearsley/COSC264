@@ -41,7 +41,7 @@ def sender(port_sin,port_sout,c_sin,raw_file):
     
     sin.listen(5) # Listen at Max Necessary?
     
-    sinConnection, sinAddress = s_in.accept()
+    sinConnection, sinAddress = sin.accept()
             
     packetConfirmation = False   
     packetBuffer = [] # All Packets to be transmitted Packets will be serialized.
@@ -120,5 +120,5 @@ def displayPacketData(packet_buffer):
 
 
 
-sender()
+sender(10290, 10250, 10260, "test.txt")
         

@@ -1,7 +1,7 @@
 import socket
 import pickle
 
-IP = '123.0.0.1'
+IP = '127.0.0.1'
 MAGIC_NO = 0x497E
 DATA_PACKET = 0
 ACK_PACKET = 1
@@ -18,7 +18,7 @@ def receiver(port_rin, port_rout, port_cin, file_name):
     
     '''bind sockets'''
     sock_rin.bind((IP, port_rin))
-    sock_rout((IP, port_rout))
+    sock_rout.bind((IP, port_rout))
     
     '''connect rout socket to cin socket'''
     sock_rout.connect((IP, port_cin))
@@ -65,5 +65,7 @@ def check_port_nums(port):
         return True
     else:
         return False
-    
-receiver()
+def main():
+    receiver(10310,10320,10300, "outputfile.txt")
+
+main()
