@@ -1,5 +1,6 @@
 import socket
 import pickle
+import select
 
 IP = '127.0.0.1'
 MAGIC_NO = 0x497E
@@ -53,19 +54,24 @@ def receiver(port_rin, port_rout, port_cin, file_name):
                 else:
                     file.close()
                     break
-                
-            
-                
-            
-        
-    
+
+
+
+
+
+
 def check_port_nums(port):
     '''checks port number for validity'''
     if port <= 64000 and port >= 1024:
         return True
     else:
         return False
+<<<<<<< HEAD
 def main():
     receiver(10310,10320,10300, "outputfile.txt")
 
 main()
+=======
+
+receiver(8005, 12333, 8002, "wow.txt")
+>>>>>>> origin/master

@@ -2,7 +2,7 @@ import sys
 import time
 import pickle
 import select
-import Packet
+import packet
 import socket
 PACKET_COUNT = 0
 MAX_PACKET = 512
@@ -14,7 +14,7 @@ IP = '127.0.0.1'
 
 
 def sender(port_sin,port_sout,c_sin,raw_file):
-
+    
     '''CHECK PORTS FOR IN RIGHT VALUES:'''
     minPort = 1024
     maxPort = 64000
@@ -25,15 +25,15 @@ def sender(port_sin,port_sout,c_sin,raw_file):
     
     '''Creating Sockets'''
     sout = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #SENDER OUT
-
+    
     
     sin = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #SENDER IN
     
-
+    
     '''BINDING SOCKETS'''
     sout.bind((IP, port_sout))
     sin.bind((IP,port_sin))
-
+    
     
     '''Connecting Sender out to Channel in'''
     sout.connect((IP,c_sin))
@@ -42,8 +42,13 @@ def sender(port_sin,port_sout,c_sin,raw_file):
     sin.listen(5) # Listen at Max Necessary?
     
     sinConnection, sinAddress = sin.accept()
+<<<<<<< HEAD
             
     packetConfirmation = False   
+=======
+    
+    packetConfirmation = False
+>>>>>>> origin/master
     packetBuffer = [] # All Packets to be transmitted Packets will be serialized.
     readBytes = 0
     filePos = 0
@@ -56,26 +61,27 @@ def sender(port_sin,port_sout,c_sin,raw_file):
         file = open(raw_file, 'rb')
     except IOError:
         printf("File Could not Be Found!")
-        exit()    
-    
-    
+        exit()
+
+
     while not flagExit:
         file.seek(filePos)
-        localBuffer = file(MAX_PACKET)
-        if packet_size > 0:
-            packet = Packet.Packet(MAGIC_NUMBER,0,sender_next,packet_size,local_buffer)
+        packet_size = file.read(512)
+        if len(packet_size) > 0:
+            packet = packet.Packet(MAGIC_NUMBER,0,sequenceNo,len(packet_size),packet_size)
             filePos += 512
         else:
-            packet = Packet.Packet(MAGIC_NUMBER,0,sender_next,0,None)
+            sequenceNo = 0;
+            packet = packet.Packet(MAGIC_NUMBER,0,sequenceNo,0,None)
             exit_flag = True
-            
+        
         serializedPacket = pickle.dump(packet) #Serialize packet using Pickle
         packetBuffer.append(serializedPacket)
         while (packetConfirmation == False):
             sout.send(packetBuffer[0]) # Send first packet in buffer.
             
             # Arguments: 1 = list waiting for reading, last = timeout time.
-            tripleList = select.select([s_in_connection], [], [], 1) 
+            tripleList = select.select([s_in_connection], [], [], 1)
             # ^ Return Val = Three items List of objects that are ready.
             
             if tripleList[0]:
@@ -87,9 +93,9 @@ def sender(port_sin,port_sout,c_sin,raw_file):
                     packetConfirmation = True
             else:
                 print("Confirmation Packet not received. \nRetransmitting....")
-    
-    
-    
+
+
+
 
 
         sin.close()
@@ -102,23 +108,14 @@ def displayPacketData(packet_buffer):
     for i in range(0,(len(packet_buffer))):
         packet = packet_buffer[i]
         print(getattr(packet,'data'))
-    
-    
-
-     
-
-        
 
 
 
 
 
-        
-    
-    
-
-
-
-
+<<<<<<< HEAD
 sender(10290, 10250, 10260, "test.txt")
         
+=======
+sender(8004, 12315, 8000, "todo.txt")
+>>>>>>> origin/master
