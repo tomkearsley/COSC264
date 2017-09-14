@@ -1,7 +1,8 @@
 import socket
 import pickle
+import select
 
-IP = '123.0.0.1'
+IP = '127.0.0.1'
 MAGIC_NO = 0x497E
 DATA_PACKET = 0
 ACK_PACKET = 1
@@ -18,7 +19,7 @@ def receiver(port_rin, port_rout, port_cin, file_name):
     
     '''bind sockets'''
     sock_rin.bind((IP, port_rin))
-    sock_rout((IP, port_rout))
+    sock_rout.bind((IP, port_rout))
     
     '''connect rout socket to cin socket'''
     sock_rout.connect((IP, port_cin))
@@ -53,17 +54,17 @@ def receiver(port_rin, port_rout, port_cin, file_name):
                 else:
                     file.close()
                     break
-                
-            
-                
-            
-        
-    
+
+
+
+
+
+
 def check_port_nums(port):
     '''checks port number for validity'''
     if port <= 64000 and port >= 1024:
         return True
     else:
         return False
-    
-receiver()
+
+receiver(8005, 12333, 8002, "wow.txt")
