@@ -2,7 +2,7 @@ import sys
 import time
 import pickle
 import select
-from packet import Packet
+import Packet
 import socket
 PACKET_COUNT = 0
 MAX_PACKET = 512
@@ -14,8 +14,13 @@ IP = '127.0.0.1'
 
 
 def sender(port_sin,port_sout,c_sin,raw_file):
-    ''' TO DO: CHECK PORTS FOR IN RIGHT VALUES:'''
-    
+    '''CHECK PORTS FOR IN RIGHT VALUES:'''
+    minPort = 1024
+    maxPort = 64000
+    portList = [port_sin,port_sout,c_sin,"Sender in","Sender out","Channel in"]
+    for i in range (0,3):
+        if (portList[i] < 1024 or portList[i] > 64000):
+            raise Exception("Port {} not in valid range.".format(portList[i+3]))
     
     '''Creating Sockets'''
     sout = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #SENDER OUT
