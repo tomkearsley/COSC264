@@ -1,102 +1,98 @@
-import socket
-import Packet
-import os
 import sys
+import time
+import pickle
+import select
+from packet import Packet
+import socket
 PACKET_COUNT = 0
 MAX_PACKET = 512
 MAGIC_NUMBER = 0x497E
 TIME_OUT = 1
 IP = '127.0.0.1'
-def sender(port_sin,port_sout,c_sin,file):
+
+
+
+
+def sender(port_sin,port_sout,c_sin,raw_file):
+    ''' TO DO: CHECK PORTS FOR IN RIGHT VALUES:'''
+    
+    
     '''Creating Sockets'''
-    port_out = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    port_in = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    '''Binding sockets to Addresses'''
-    port_in.bind((IP,port_sin))
+    sout = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #SENDER OUT
+
     
-    packet_buffer = [] # All Packets to be transmitted
+    sin = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #SENDER IN
     
+
+    '''BINDING SOCKETS'''
+    sout.bind((IP, port_sout))
+    sin.bind((IP,port_sin))
+
     
-    '''Listening'''
-    port_out.listen(1)
-    
-    
-    
-    # connect() sout
-    server_address = (IP,port_sout)
-    port_out.connect(server_address)  # set to default receiver to port_num of Csin
+    '''Connecting Sender out to Channel in'''
+    sout.connect((IP,c_sin))
     
     
+    sin.listen(5) # Listen at Max Necessary?
     
-    # check if supplied filename exits and is readable else exit sender 
-    '''
-    if not (os.path.isfile(PATH) and os.access(PATH, os.R_OK)):
-        exit(-1)'''
-        
-    sender_next = 0 #local integer variable set to 0
-    exit_flag = False # exit Flag 
-    
-    while True:
-        with open(file, 'rb') as file:
-            local_buffer = file.read(MAX_PACKET)  
-        
-        packet_size = sys.getsizeof(local_buffer)
-        if packet_size > 0:
-            #Packet = (magic,type,seqno,dataLen,data)
-            packet = Packet.Packet(MAGIC_NUMBER,0,sender_next,packet_size,local_buffer)
-            packet_buffer.append(packet)
-        else:
-            packet = Packet.Packet(MAGIC_NUMBER,0,sender_next,0,0)
-            packet_buffer.append(packet)
-            exit_flag = True
-        inner_loop = True
-        while inner_loop:
-            count = 0
-            port_out.send(packet) #sends packet
+    sinConnection, sinAddress = s_in.accept()
             
-            socket_list = [port_in, sys.stdin]
-            read_sock, write_sock, error_sock, _ = select.select(
-                socket_list, [], [],
-                TIMEOUT)            
-            if exit_flag:
-                print('Total Packets Sent:', sent_packet_count)
-                file_name.close()
-                sock_sin.close()
-                sock_sout.close()
+    packetConfirmation = False   
+    packetBuffer = [] # All Packets to be transmitted Packets will be serialized.
+    readBytes = 0
+    filePos = 0
+    flagExit = False
+    
+    sequenceNo = 1
+    
+    
+    try:
+        file = open(raw_file, 'rb')
+    except IOError:
+        printf("File Could not Be Found!")
+        exit()    
+    
+    
+    while not flagExit:
+        file.seek(filePos)
+        localBuffer = file(MAX_PACKET)
+        if packet_size > 0:
+            packet = Packet.Packet(MAGIC_NUMBER,0,sender_next,packet_size,local_buffer)
+            filePos += 512
+        else:
+            packet = Packet.Packet(MAGIC_NUMBER,0,sender_next,0,None)
+            exit_flag = True
+            
+        serializedPacket = pickle.dump(packet) #Serialize packet using Pickle
+        packetBuffer.append(serializedPacket)
+        while (packetConfirmation == False):
+            sout.send(packetBuffer[0]) # Send first packet in buffer.
+            
+            # Arguments: 1 = list waiting for reading, last = timeout time.
+            tripleList = select.select([s_in_connection], [], [], 1) 
+            # ^ Return Val = Three items List of objects that are ready.
+            
+            if tripleList[0]:
+                recievedPacket = sinConnection.recv(1024)
+                recievedPacket = pickle.loads(recievedPacket)
+                if getattr(recievedPacket,'seqNo') == sequenceNo:
+                    sequenceNo += 1
+                    packetBuffer.pop(0)
+                    packetConfirmation = True
             else:
-                inner = False            
-        
+                print("Confirmation Packet not received. \nRetransmitting....")
+    
+    
+    
 
 
-        
-        
+        sin.close()
+        sout.close()
 
 
 
 
-'''
-    def create_packet(self,open_file,packet_buffer):       
-        remainder = size - ((len(packet_buffer) + 1 )* MAX_PACKET)
-        while remainder > MAX_PACKET:
-            open_file.seek(remainder)
-            local_buffer = open_file.read(MAX_PACKET)       
-            magic = MAGIC_NUMBER
-            packet_type = 0
-            seqno = 2        
-            packet = Packet.Packet(magic,packet_type,seqno,MAX_PACKET,local_buffer)
-            packet_buffer.append(packet)
-            remainder = size - ((len(packet_buffer) + 1 )* MAX_PACKET)
-        open_file.seek(remainder)
-        local_buffer = open_file.read(remainder)
-        magic = MAGIC_NUMBER
-        packet_type = 0
-        seqno = 2        
-        packet = Packet.Packet(magic,packet_type,seqno,remainder,local_buffer)
-        packet_buffer.append(packet)
-        
-        return packet_buffer
-    '''
-def displayPacketData(self,packet_buffer):
+def displayPacketData(packet_buffer):
     for i in range(0,(len(packet_buffer))):
         packet = packet_buffer[i]
         print(getattr(packet,'data'))
@@ -112,7 +108,7 @@ def displayPacketData(self,packet_buffer):
 
 def main():
     file = 'test.txt'
-    s = sender(1026,1028,1030,file)
+    s = sender(9999,1999,29393,file) 
 
         
     

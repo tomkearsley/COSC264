@@ -2,7 +2,7 @@
 a certain size and sending these through the channel'''
 import socket
 import sys
-from packet import *
+from Packet import *
 import select
 import random
 
@@ -92,7 +92,7 @@ while True:
     for s in in_put:
         if s == Csin:
             # receive data
-            data, address = Csin.recvfrom(1024)
+            data, address = Csin.recvfrom(512)
             # convert string to packet instance
             packet = loads(data)
             #use packet data
@@ -107,7 +107,7 @@ while True:
                     sys.exit(1)
         if s == Crin:
             # receive data
-            data, address = Crin.recvfrom(1024)
+            data, address = Crin.recvfrom(512)
             # convert string to packet instance
             packet = loads(data)
             #use packet data
